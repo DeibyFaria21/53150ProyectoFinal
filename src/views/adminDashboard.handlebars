@@ -1,0 +1,96 @@
+{{#if user}}
+    <h2>Bienvenido, {{user.first_name}}</h2>
+    <h4>Actualmente tu role es: {{user.role}}.</h4>
+    <div style="display: flex; gap: 10px">
+        <form action="/api/sessions/logout" method="POST">
+            <button type="submit">Cerrar Sesión</button>
+        </form>
+    </div>
+{{else}}
+    <a href="/login">
+        <h3>INICIAR SESIÓN</h3>
+    </a>
+{{/if}}
+
+{{#if (or (equals user.role "admin") (equals user.role "premium"))}}
+    <div>
+        <a href="/products">
+            <h3>PRODUCTOS</h3>
+        </a>
+        <a href="/addProduct">
+            <h3>
+                Agregar un producto...
+            </h3>
+        </a>
+    </div>
+{{/if}}
+<div>
+    <div>
+        <div>
+            <div>
+                <h1>Lista de productos</h1>
+            </div>
+        </div>
+    </div>
+    {{#if products.length}}
+        <table>
+            <thead>
+                <tr>
+                    {{!-- <th></th> --}}
+                    <th style="padding-right: 20px;">ID</th>
+                    <th style="padding-right: 20px;">Nombre</th>
+                    <th style="padding-right: 20px;">Precio</th>
+                    <th style="padding-right: 20px;">Publicado por:</th>
+                    <th style="padding-right: 20px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products}}
+                    <tr>
+                        {{!-- <td><img src="{{this.thumbnail}}" style="width: 50px;"></td> --}}
+                        <td style="padding-right: 20px;">{{this._id}}</td>
+                        <td style="padding-right: 20px;">{{this.name}}</td>
+                        <td style="padding-right: 20px;">${{this.price}}</td>
+                        <td style="padding-right: 20px;">{{this.owner}}</td>
+                        <td style="padding-right: 20px;">
+                            <a href="/adminUpdateProduct/{{this._id}}">Editar</a>
+                        </td>
+                        <td style="padding-right: 20px;">
+                            <a href="/adminDeleteProduct/{{_id}}" id="deleteProductBtn">Eliminar</a>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No hay productos disponibles! 😥</p>
+    {{/if}}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteBtns = document.querySelectorAll('#deleteProductBtn')
+        
+        deleteBtns.forEach(btn => {
+            btn.addEventListener('click', function (event) {
+                event.preventDefault()
+                
+                const deleteUrl = this.getAttribute('href')
+                
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: '¿Quieres borrar este producto?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, borrar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = deleteUrl
+                    }
+                })
+            })
+        })
+    })
+</script>

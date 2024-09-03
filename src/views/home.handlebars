@@ -1,0 +1,96 @@
+<div>
+    {{#if user}}
+        <div style="display: flex; gap: 50px">
+            <a href="/products">
+                <h3>PRODUCTOS</h3>
+            </a>
+            
+            <a href="/carts/{{user.cart._id}}">
+                <h3>CARRITO</h3>
+            </a>
+            <a href="/profile">
+                <h3>PERFIL</h3>
+            </a>
+            <a href="/api/chat">
+                <h3>CHAT</h3>
+            </a>
+            <a href="/api/products/mockingProducts">
+                <h3>mockingProducts</h3>
+            </a>
+            <a href="/api-docs">
+                <h3>SWAGGER</h3>
+            </a>
+        </div>
+        <h2>Bienvenido, {{user.first_name}}!!</h2>
+        <h4>Actualmente tu rol es: {{user.role}}.</h4>
+        <div style="display: flex; gap: 10px">
+            <form action="/api/sessions/logout" method="POST">
+                <button type="submit">Cerrar Sesión</button>
+            </form>
+        </div>
+    {{else}}
+        <a href="/login">
+            <h3>INICIAR SESIÓN</h3>
+        </a>
+    {{/if}}
+    {{#if (equals user.role "premium")}}
+        <a href="/addProduct">
+            <h3>AGREGAR PRODUCTOS</h3>
+        </a>
+        <a href="/adminDashboard">
+            <h3>VER MIS PORDUCTOS PUBLICADOS</h3>
+        </a>
+    {{/if}}
+    {{#if (equals user.role "admin")}}
+        <a href="/adminDashboard">
+            <h3>ADMIN</h3>
+        </a>
+        
+    {{/if}}
+</div>
+<div>
+    <h1>Listado de productos...</h1>
+</div>
+<div>
+    <ul id="products">
+        {{#each payload.payload}}
+            <br/>
+            <li>
+                <strong>Título:</strong> {{this.name}}<br>
+                <strong>Descripción:</strong> {{this.description}}<br>
+                <strong>Código:</strong> {{this.code}}<br>
+                <strong>Precio:</strong> {{this.price}}<br>
+                <strong>Stock:</strong> {{this.stock}}<br>
+                <strong>Categoría:</strong> {{this.category}}<br>
+                <strong>Thumbnail:</strong> {{this.thumbnail}}<br>
+                <strong>Publicado por:</strong> {{this.owner}}<br>
+                <br>
+                {{#if (equals ../user.role "user")}}
+                    <form action="api/carts/{{../user.cart._id}}/products/{{this._id}}" method="POST">
+                        <input type="hidden" name="productId" value="{{this._id}}">
+                        <label for="quantity">Cantidad:</label>
+                        <input type="number" name="cantidad" value="1" min="1">
+                        <button type="submit">Agregar al carrito</button>
+                    </form>
+                {{/if}}
+                <br/>
+                <a href="/products/{{this._id}}">Ver detalles</a>
+                <br/>
+                <br/>
+                <hr>
+            </li>
+        {{/each}}
+    </ul>
+</div>
+<div>
+    {{#if payload.pagination.hasPrevPage}}
+        <a href={{payload.pagination.prevLink}}><< Anterior</a>
+    {{/if}}
+    &nbsp;
+    Página {{payload.pagination.currentPage}} de {{payload.pagination.totalPages}}
+    &nbsp;
+    {{#if payload.pagination.hasNextPage}}
+    <a href={{payload.pagination.nextLink}}>Siguiente >></a>
+    {{/if}}
+</div>
+

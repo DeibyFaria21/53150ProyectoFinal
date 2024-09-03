@@ -1,0 +1,111 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtener todos los productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "500":
+          description: Internal server error
+
+  /api/products/categories:
+    get:
+      summary: Obtener todas las categorías de productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: A list of product categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "500":
+          description: Internal server error
+
+  /api/products/mockingProducts:
+    get:
+      summary: Obtener productos de prueba
+      tags:
+        - Products
+      responses:
+        "200":
+          description: A list of products with mocking data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "500":
+          description: Internal server error
+
+  /api/products/mockingProducts/regenerate:
+    post:
+      summary: Regenerar productos de prueba
+      tags:
+        - Products
+      responses:
+        "200":
+          description: A list of products with mocking data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The product ID
+        name:
+          type: string
+          description: The product name
+        description:
+          type: string
+          description: The product description
+        price:
+          type: number
+          description: The product price
+        category:
+          type: string
+          description: The product category
+        availability:
+          type: boolean
+          description: The product availability
+        stock:
+          type: number
+          description: The product stock
+        thumbnail:
+          type: string
+          description: The product thumbnail
+        owner:
+          type: string
+          description: The product owner
+      example:
+        _id: "66b54a70ef08530b64b4d5ce"
+        name: "Shoes"
+        description: "Comfortable facha shoes"
+        price: 100
+        category: "Clothing"
+        availability: true
+        stock: 49
+        thumbnail: "https://example.com/product1.jpg"
+        owner: "admin"

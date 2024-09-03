@@ -1,0 +1,70 @@
+<div>
+    <h3>Editar producto</h3>
+    <form action="/adminUpdateProduct/{{productById._id}}" method="POST" id="adminUpdateForm">
+        <div>
+            <label for="name">Nombre</label>
+            <input type="text" id="name" name="name" placeholder="Nombre" value="{{productById.name}}">
+        </div>
+        <div>
+            <label for="description">Descripción</label>
+            <input type="text" id="description" name="description" placeholder="Descripción" value="{{productById.description}}">
+        </div>
+        <div>
+            <label for="price">Precio</label>
+            <input type="number" id="price" name="price" placeholder="Precio" value="{{productById.price}}">
+        </div>
+        <div>
+            <label for="category">Categoría</label>
+            <input type="text" id="category" name="category" placeholder="Categoría" value="{{productById.category}}">
+        </div>
+        <div>
+            <label for="availability">Disponibilidad</label>
+            <select id="availability" name="availability" required>
+                <option value="" disabled selected>Selecciona disponibilidad</option>
+                <option value="true" {{#if (equals productById.availability "true")}}selected{{/if}}>True</option>
+                <option value="false" {{#if (equals productById.availability "false")}}selected{{/if}}>False</option>
+            </select>
+        </div>
+        <div>
+            <label for="stock">Stock</label>
+            <input type="number" id="stock" name="stock" placeholder="Stock" value="{{productById.stock}}">
+        </div>
+        <div>
+            <label for="thumbnail">URL de la Imagen</label>
+            <input type="text" id="thumbnail" name="thumbnail" placeholder="URL de la Imagen" value="{{productById.thumbnail}}">
+        </div>
+        <button type="submit" id="updateProductBtn">Actualizar</button>
+        <a href="/adminViewAllProducts">
+            Volver a Productos
+        </a>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const updateBtn = document.getElementById('updateProductBtn')
+        
+        updateBtn.addEventListener('click', function (event) {
+            event.preventDefault()
+            
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¿Quieres actualizar este producto?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, actualizar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('adminUpdateForm')
+                    if (form) {
+                        form.submit()
+                    } else {
+                        console.error('Formulario no encontrado.')
+                    }
+                }
+            })
+        })
+    })
+</script>

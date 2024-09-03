@@ -1,0 +1,83 @@
+<body>
+    <div>
+        <h1>Verificar datos del ticket</h1>
+        <div>
+            <div>
+                Detalle del Carrito
+            </div>
+            <div>
+                {{#if cart.products.length}}
+                    <ul>
+                        {{#each cart.products}}
+                            <li>
+                                <div>
+                                    <h5>{{product.name}}</h5>
+                                    <small>Cantidad: {{quantity}}</small>
+                                </div>
+                                <span>${{calculateSubtotal this.product.price this.quantity}}</span>
+                            </li>
+                        {{/each}}
+                    </ul>
+                    <a href="/carts/{{cart._id}}">Volver al carrito</a>
+                    <br>
+                    <br>
+                    <hr>
+                    <button id="purchase-email-btn">Recibir ticket por email</button>
+                    <br>
+                {{else}}
+                    <p>No hay productos en el carrito.</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const handlePurchase = (url, phoneNumber) => {
+            const payload = phoneNumber ? { phoneNumber } : {}
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Compra realizada',
+                        text: data.message,
+                        footer: `Código de compra: ${data.ticket.code}`
+                    }).then(() => {
+                        window.location.href = '/products'
+                    })
+                } else {
+                    let productDetails = ''
+                    if (data.unavailableProducts && data.unavailableProducts.length > 0) {
+                        productDetails = 'Uno o más productos no están disponibles!'
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en la compra',
+                        text: data.message,
+                        footer: productDetails ? productDetails : ''
+                    }).then(() => {
+                        window.location.href = '/carts/{{cart._id}}'
+                    })
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error al realizar la compra'
+                })
+            })
+        }
+
+        document.getElementById('purchase-email-btn').addEventListener('click', () => handlePurchase(`/api/carts/{{cart._id}}/purchase?method=email`))
+    </script>
+</body>

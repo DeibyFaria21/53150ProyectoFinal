@@ -1,0 +1,49 @@
+<h2>Perfil de Usuario</h2>
+
+<div>
+    <div style="align-items: center; margin:10px;">
+        <div>
+            <div>
+                <h5>{{user.first_name}} {{user.last_name}}</h5>
+                <ul>
+                    <li><strong>Email: </strong>{{user.email}}</li>
+                    <li><strong>Edad: </strong>{{user.age}}</li>
+                </ul>
+            </div>
+            <div>
+                {{#if (equals user.role "user")}}
+                    <button class="change-role">Actualizar a Usuario Premium</button>
+                {{else}}
+                    <button class="change-role">Actualizar a Usuario común</button>
+                {{/if}}
+                rol actual: {{user.role}}
+                <br><br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.change-role').addEventListener('click', function() {
+        const userId = "{{user._id}}"
+        fetch(`/api/sessions/premium/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.role) {
+                Swal.fire('Éxito', `El rol ha sido cambiado a ${data.role}`, 'success').then(() => {
+                    window.location.reload()
+                })
+            } else {
+                Swal.fire('Error', 'No se pudo cambiar el rol', 'error')
+            }
+        })
+        .catch(error => {
+            Swal.fire('Error', 'Hubo un problema al cambiar el rol', 'error')
+        })
+    })
+</script>

@@ -1,0 +1,34 @@
+<div>
+    <h1>Chat</h1>
+    <form action="/api/chat" method="POST">
+        <div>
+            <input type="text" name="user" placeholder="Tu correo" required>
+        </div>
+        <div>
+            <input type="text" name="message" placeholder="Mensaje" required>
+        </div>
+        <button type="submit">
+            Enviar
+        </button>
+        <a href="/products">
+            Volver a Productos
+        </a>
+        <hr>
+    </form>
+    <div>
+        {{#each messages}}
+            <div>
+                <h5>
+                    {{user}} send:
+                </h5>
+                <strong>
+                    {{message}} -
+                </strong>
+                <a href="/api/chat/{{_id}}">
+                    Eliminar mensaje
+                </a>
+                <hr>
+            </div>
+        {{/each}}
+    </div>
+</div>

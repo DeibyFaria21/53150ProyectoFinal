@@ -1,0 +1,62 @@
+<div>
+    <form id="addProductForm" action="/addProduct" method="POST">
+        <div>
+            <label for="name">Nombre</label>
+            <input type="text" id="name" name="name" placeholder="Nombre" value="{{productById.name}}" required>
+        </div>
+        <div>
+            <label for="description">Descripción</label>
+            <input type="text" id="description" name="description" placeholder="Descripción" value="{{productById.description}}" required>
+        </div>
+        <div>
+            <label for="price">Precio</label>
+            <input type="number" id="price" name="price" placeholder="Precio" value="{{productById.price}}" required>
+        </div>
+        <div>
+            <label for="category">Categoría</label>
+            <input type="text" id="category" name="category" placeholder="Categoría" value="{{productById.category}}" required>
+        </div>
+        <div>
+            <label for="availability">Disponibilidad</label>
+            <select id="availability" name="availability" required>
+                <option value="" disabled selected>Selecciona disponibilidad</option>
+                <option value="true" {{#if (equals productById.availability "true")}}selected{{/if}}>True</option>
+                <option value="false" {{#if (equals productById.availability "false")}}selected{{/if}}>False</option>
+            </select>
+        </div>
+        <div>
+            <label for="stock">Stock</label>
+            <input type="number" id="stock" name="stock" placeholder="Stock" value="{{productById.stock}}" required>
+        </div>
+        <div>
+            <label for="thumbnail">URL de la Imagen</label>
+            <input type="text" id="thumbnail" name="thumbnail" placeholder="URL de la Imagen" value="{{productById.thumbnail}}" required>
+        </div>
+        <button type="button" onclick="confirmAddProduct(event)">
+            Agregar Producto
+        </button>
+        <a href="/products">
+            Volver a Productos
+        </a>
+    </form>
+</div>
+
+<script>
+    function confirmAddProduct(event) {
+        event.preventDefault()
+        
+        Swal.fire({
+            title: '¿Estás seguro?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, agregar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('addProductForm').submit()
+            }
+        })
+    }
+</script>

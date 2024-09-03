@@ -1,0 +1,1 @@
+El index en public/js, anteriormente estaba en public y era .html

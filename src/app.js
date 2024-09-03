@@ -63,6 +63,9 @@ app.engine('handlebars', engine({
     helpers: {
         equals: (a, b) => String(a) === String(b),
         different: (a, b) => String(a) !== String(b),
+        or: function() {
+            return Array.prototype.slice.call(arguments, 0, -1).some(Boolean)
+        },
         calculateSubtotal: (price, quantity) => price * quantity,
         calculateTotal: (products) => {
             return products.reduce((total, product) => {

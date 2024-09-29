@@ -1,9 +1,14 @@
 import express from 'express'
+import dotenv from 'dotenv'
 import { authorizeRoles, checkUser } from '../middlewares/auth.js'
+import User from '../dao/models/user.model.js'
 import Cart from '../dao/models/cart.model.js'
 import Product from '../dao/models/product.model.js'
+import Message from '../dao/models/message.model.js'
 import logger from '../utils/logger.js'
+import transporter from '../config/emailConfig.js'
 
+dotenv.config()
 const router = express.Router()
 
 router.get('/products', checkUser, async (req, res) => {
@@ -130,6 +135,12 @@ router.get('/profile', authorizeRoles(['user', 'premium']), async (req, res) => 
     })
 })
 
+router.get('/profile/:uid/documents', authorizeRoles(['user', 'premium']), async (req, res) => {
+    res.render('uploadDocuments', {
+        user: res.locals.user
+    })
+})
+
 router.get('/:cid/purchase', authorizeRoles(['user', 'premium']), async (req, res) => {
     try {
         const cartId = req.params.cid
@@ -234,15 +245,57 @@ router.delete('/adminDeleteProduct/:pid', authorizeRoles(['premium', 'admin']), 
     res.send({ result: "success", payload: result })
 })
 
+export const sendEmail = async (to, subject, text) => {
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_USER_NODEMAILER,
+            to,
+            subject,
+            text,
+        }
+
+        await transporter.sendMail(mailOptions)
+    } catch (error) {
+        console.error(`Error al enviar correo a ${to}:`, error)
+    }
+}
+
 router.get('/adminDeleteProduct/:pid', authorizeRoles(['premium', 'admin']), async (req, res) => {
     try {
         const { pid } = req.params
+        const product = await Product.findById(pid)
+
+        if (!product) {
+            return res.status(404).render('error', { message: 'Producto no encontrado.' })
+        }
+
+        if (product.owner !== 'admin') {
+            await sendEmail(
+                product.owner,
+                'Producto Eliminado',
+                `Tu producto "${product.name}" ha sido eliminado.`
+            )
+        }
+
         await Product.findByIdAndDelete(pid)
-        
+
         res.redirect('/adminDashboard')
     } catch (error) {
         console.error('Error al eliminar el producto:', error)
         res.status(500).render('error', { message: 'Error al eliminar el producto.' })
+    }
+})
+
+router.get('/adminViewAllUsers', authorizeRoles(['admin']), async (req, res) => {
+    try {
+        const users = await User.find().lean()
+        res.render('adminViewAllUsers', {
+            users,
+            style: 'style.css'
+        })
+    } catch (error) {
+        console.error('Error al obtener los usuarios:', error)
+        res.status(500).send('Error al obtener los usuarios')
     }
 })
 
@@ -273,5 +326,7 @@ router.get('/reset-password/:token', (req, res) => {
         expired
     })
 })
+
+
 
 export default router

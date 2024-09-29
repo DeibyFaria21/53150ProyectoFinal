@@ -10,7 +10,12 @@ const userSchema = new mongoose.Schema({
     age: Number,
     cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
     role: { type: String, default: 'user', enum: ['user', 'admin', 'premium'] },
-    purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ticket' }]
+    purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ticket' }],
+    documents: [{
+        name: { type: String, required: true },
+        reference: { type: String, required: true }
+    }],
+    last_connection: { type: Date }
 }, { timestamps: true })
 
 userSchema.pre('save', async function (next) {

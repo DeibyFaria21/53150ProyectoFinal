@@ -1,0 +1,115 @@
+    <h1 class="text-center mb-4">Gestión de Usuarios</h1>
+
+    <a href="/adminDashboard">Volver al Dashboard</a>
+    <br>
+    <br>
+    <div>
+        <button id="deleteInactiveUsersBtn" class="btn btn-warning">Eliminar usuarios inactivos</button>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Correo</th>
+                <th>Última vez conectado</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr>
+                <td>{{this.email}}</td>
+                <td><span class="formatted-date" data-date="{{this.last_connection}}"></span></td>
+                <td>
+                    <form action="/api/sessions/adminViewAllUsers/{{this._id}}/role" method="POST">
+                        <select class="form-select" name="role" onchange="this.form.submit()">
+                            <option value="user" {{#if (equals this.role 'user')}}selected{{/if}}>User</option>
+                            <option value="premium" {{#if (equals this.role 'premium')}}selected{{/if}}>Premium</option>
+                            <option value="admin" {{#if (equals this.role 'admin')}}selected{{/if}}>Admin</option>
+                        </select>
+                    </form>
+                </td>
+                {{#if (different this.role 'admin')}}
+                <td>
+                    <button class="btn btn-danger delete-user-btn" data-id="{{this._id}}" data-name="{{this.first_name}}">Eliminar</button>
+                </td>
+                {{/if}}
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.querySelectorAll('.delete-user-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id')
+            const userName = this.getAttribute('data-name')
+
+            Swal.fire({
+                title: `¿Estás seguro de eliminar a ${userName}?`,
+                text: "Esta acción no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/sessions/adminViewAllUsers/${userId}`, {
+                        method: 'DELETE'
+                    }).then(response => {
+                        if (response.ok) {
+                            Swal.fire('Eliminado', 'El usuario ha sido eliminado', 'success').then(() => {
+                                window.location.reload()
+                            })
+                        } else {
+                            Swal.fire('Error', 'No se pudo eliminar el usuario', 'error')
+                        }
+                    })
+                }
+            })
+        })
+    })
+
+    document.getElementById('deleteInactiveUsersBtn').addEventListener('click', function() {
+        Swal.fire({
+            title: '¿Estás seguro de eliminar a los usuarios inactivos?',
+            text: "Esta acción eliminará todos los usuarios sin conexión reciente.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/api/sessions/adminViewAllUsers', {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire('Eliminado', 'Usuarios actualizados/eliminados correctamente', 'success').then(() => {
+                            window.location.reload()
+                        })
+                    } else {
+                        Swal.fire('Error', 'No se pudo eliminar los usuarios inactivos', 'error')
+                    }
+                })
+            }
+        })
+    })
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.formatted-date').forEach(function(span) {
+            const date = new Date(span.getAttribute('data-date'))
+            const formattedDate = date.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })
+            span.textContent = formattedDate
+        })
+    })
+</script>

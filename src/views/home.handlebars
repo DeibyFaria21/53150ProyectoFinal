@@ -2,23 +2,23 @@
     {{#if user}}
         <div style="display: flex; gap: 50px">
             <a href="/products">
-                <h3>PRODUCTOS</h3>
+                <h3>AllProducts</h3>
             </a>
             
             <a href="/carts/{{user.cart._id}}">
-                <h3>CARRITO</h3>
+                <h3>MyCart</h3>
             </a>
             <a href="/profile">
-                <h3>PERFIL</h3>
+                <h3>PerfilCount</h3>
             </a>
             <a href="/api/chat">
-                <h3>CHAT</h3>
+                <h3>ChatMessages</h3>
             </a>
             <a href="/api/products/mockingProducts">
-                <h3>mockingProducts</h3>
+                <h3>MockingProducts</h3>
             </a>
             <a href="/api-docs">
-                <h3>SWAGGER</h3>
+                <h3>Swagger</h3>
             </a>
         </div>
         <h2>Bienvenido, {{user.first_name}}!!</h2>
@@ -30,20 +30,20 @@
         </div>
     {{else}}
         <a href="/login">
-            <h3>INICIAR SESIÓN</h3>
+            <h3>Iniciar Sesión</h3>
         </a>
     {{/if}}
     {{#if (equals user.role "premium")}}
         <a href="/addProduct">
-            <h3>AGREGAR PRODUCTOS</h3>
+            <h3>Agregar Productos</h3>
         </a>
         <a href="/adminDashboard">
-            <h3>VER MIS PORDUCTOS PUBLICADOS</h3>
+            <h3>Ver mis productos publicados</h3>
         </a>
     {{/if}}
     {{#if (equals user.role "admin")}}
         <a href="/adminDashboard">
-            <h3>ADMIN</h3>
+            <h3>AdminDashboard</h3>
         </a>
         
     {{/if}}

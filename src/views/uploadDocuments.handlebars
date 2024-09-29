@@ -1,0 +1,28 @@
+<h1>Subir Documentos</h1>
+<h4>(Solo archivos JPEG, JPG, PNG o PDF!)</h4><br>
+    {{#if success}}
+        <div class="alert alert-success">{{success}}</div>
+    {{/if}}
+    {{#if error}}
+        <div class="alert alert-danger">{{error}}</div>
+    {{/if}}
+
+    <form action="/api/sessions/profile/{{user._id}}/documents" method="POST" enctype="multipart/form-data">
+    <div>
+        <label for="identification" class="form-label">Identificación</label>
+        <input type="file" class="form-control" id="identification" name="documents[identification]" accept="image/*,.pdf" onchange="previewFile(this, 'identificationPreview')">
+    </div>
+    <br>
+    <div>
+        <label for="proofOfAddress" class="form-label">Comprobante de Domicilio</label>
+        <input type="file" class="form-control" id="proofOfAddress" name="documents[proofOfAddress]" accept="image/*,.pdf" onchange="previewFile(this, 'proofOfAddressPreview')">
+    </div>
+    <br>
+    <div>
+        <label for="accountStatement" class="form-label">Estado de Cuenta</label>
+        <input type="file" class="form-control" id="accountStatement" name="documents[accountStatement]" accept="image/*,.pdf" onchange="previewFile(this, 'accountStatementPreview')">
+    </div>
+    <br>
+    <button type="submit">Subir Documentos</button>
+    <button><a href="/profile">Volver al perfil</a></button>
+</form>

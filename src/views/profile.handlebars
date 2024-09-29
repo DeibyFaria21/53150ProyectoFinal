@@ -8,16 +8,26 @@
                 <ul>
                     <li><strong>Email: </strong>{{user.email}}</li>
                     <li><strong>Edad: </strong>{{user.age}}</li>
+                    <br>
+                    <strong>Rol actual: </strong>{{user.role}}
                 </ul>
             </div>
             <div>
                 {{#if (equals user.role "user")}}
                     <button class="change-role">Actualizar a Usuario Premium</button>
+                    <a href="/profile/{{user._id}}/documents">
+                        <button class="btn btn-warning">Subir documentos para ser Premium</button>
+                    </a>
                 {{else}}
                     <button class="change-role">Actualizar a Usuario común</button>
+                    <a href="/profile/{{user._id}}/documents">
+                        <button class="btn btn-warning">Actualizar mis documentos</button>
+                    </a>
                 {{/if}}
-                rol actual: {{user.role}}
                 <br><br>
+                <a href="/products">
+                    <h3>PRODUCTOS</h3>
+                </a>
             </div>
         </div>
     </div>

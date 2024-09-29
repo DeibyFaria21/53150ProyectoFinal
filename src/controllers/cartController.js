@@ -71,6 +71,7 @@ export const addProductToCart = async (req, res) => {
         await addProductToCartService(cid, pid, cantidad)
         logger.info(`Producto agregado al carrito`)
         res.json({ status: 'success', message: 'Producto agregado al carrito' })
+        /* res.redirect(`/carts/${cart}`); */
     } catch (err) {
         logger.error(`Error al agregar producto: ${err.message}`)
         res.status(500).json({ status: 'error', message: err.message })

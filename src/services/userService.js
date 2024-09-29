@@ -57,3 +57,20 @@ export const updateProfile = async (userId, profileData, file) => {
     }
 }
 
+export const deleteUser = async (userId) => {
+    try {
+        const user = await userRepository.getUserById(userId)
+
+        if (!user) {
+            throw new Error('Usuario no encontrado')
+        }
+
+        if (user.role !== 'admin') {
+            await Cart.findByIdAndDelete(user.cart)
+            await userRepository.deleteUser(userId)
+            return new UserDTO(user)
+        }
+    } catch (error) {
+        throw new Error('Error al eliminar el perfil: ' + error.message)
+    }
+}

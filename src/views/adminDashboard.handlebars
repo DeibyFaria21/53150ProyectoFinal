@@ -15,7 +15,7 @@
 {{#if (or (equals user.role "admin") (equals user.role "premium"))}}
     <div>
         <a href="/products">
-            <h3>PRODUCTOS</h3>
+            <h3>AllProducts</h3>
         </a>
         <a href="/addProduct">
             <h3>
@@ -23,6 +23,13 @@
             </h3>
         </a>
     </div>
+{{/if}}
+{{#if (equals user.role "admin")}}
+    <a href="/adminViewAllUsers">
+        <h3>
+            Gestionar usuarios...
+        </h3>
+    </a>
 {{/if}}
 <div>
     <div>
